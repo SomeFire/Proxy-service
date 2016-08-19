@@ -7,6 +7,8 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.*;
+import java.util.zip.ZipInputStream;
+import java.util.zip.ZipOutputStream;
 
 import static java.lang.ClassLoader.getSystemClassLoader;
 import static java.util.Arrays.asList;
@@ -48,7 +50,10 @@ public class CacheProxy implements InvocationHandler {
 			String path = cache.fileNamePrefix().equals("") ? defaultPath : cache.fileNamePrefix();
 			Map<Object, Object> resultsFromFile = null;
 			Object result = null;
-			try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(path + method.getName()))) {
+			try (ObjectInputStream ois = new ObjectInputStream(
+					cache.zip() ?
+					new FileInputStream(path + method.getName()) :
+					new ZipInputStream(new FileInputStream(path + method.getName())))) {
 				resultsFromFile = (Map<Object, Object>) ois.readObject();
 				result = resultsFromFile.get(asList(weightyArgs));
 			} catch (NullPointerException ignore) {
@@ -67,14 +72,15 @@ public class CacheProxy implements InvocationHandler {
 				System.err.println("Can't read file.");
 				System.err.println(e.getMessage());
 			}
-			System.out.println("File exist? " + result != null);
 			if (resultsFromFile == null) resultsFromFile = new HashMap<>();
 			if (result == null) {
 				System.out.println("Delegation of " + method.getName());
 				result = invoke(method, args);
 				if (isPutable(result, cache)) {
 					try (ObjectOutputStream oos = new ObjectOutputStream(
-							new FileOutputStream(path + method.getName(), true))) {
+							cache.zip() ?
+							new FileOutputStream(path + method.getName(), true) :
+							new ZipOutputStream(new FileOutputStream(path + method.getName(), true)))) {
 						resultsFromFile.put(asList(weightyArgs), result);
 						oos.writeObject(resultsFromFile);
 					} catch (NotSerializableException e) {
@@ -116,7 +122,6 @@ public class CacheProxy implements InvocationHandler {
 	}
 
 	private Object[] checkArgs(Method method, Object[] args, Class[] availableClasses) {
-		System.out.println("classes length: " + availableClasses.length);
 		if (availableClasses.length == 0) {
 			return args;
 		} else {
