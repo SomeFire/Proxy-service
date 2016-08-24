@@ -58,19 +58,15 @@ public class CacheProxy implements InvocationHandler {
 				result = resultsFromFile.get(asList(weightyArgs));
 			} catch (NullPointerException ignore) {
 			} catch (NotSerializableException e) {
-				System.err.println("Can't write object. Implement 'Serializable' interface.");
-				System.err.println(e.getMessage());
+				throw new RuntimeException("Can't write object. Implement 'Serializable' interface.");
 			} catch (ClassNotFoundException e) {
-				System.err.println("Из файла считан несуществующий класс. " +
+				throw new RuntimeException("Из файла считан несуществующий класс. " +
 						"Возможно, повреждён .class файл или не указан serialVersionUID.");
-				System.err.println(e.getMessage());
 			} catch (ClassCastException e) {
-				System.err.println("Из файла считан неподходящий объект. " +
+				throw new RuntimeException("Из файла считан неподходящий объект. " +
 						"Убедитесь, что записывается и считывается объект одного класса.");
-				System.err.println(e.getMessage());
 			} catch (IOException e) {
-				System.err.println("Can't read file.");
-				System.err.println(e.getMessage());
+				throw new RuntimeException("Can't read file.");
 			}
 			if (resultsFromFile == null) resultsFromFile = new HashMap<>();
 			if (result == null) {
@@ -84,11 +80,9 @@ public class CacheProxy implements InvocationHandler {
 						resultsFromFile.put(asList(weightyArgs), result);
 						oos.writeObject(resultsFromFile);
 					} catch (NotSerializableException e) {
-						System.err.println("Can't write object. Implement 'Serializable' interface.");
-						System.err.println(e.getMessage());
+						throw new RuntimeException("Can't write object. Implement 'Serializable' interface.");
 					} catch (IOException e) {
-						System.err.println("Can't create file. Ensure, that you have rights to write files in path.");
-						System.err.println(e.getMessage());
+						throw new RuntimeException("Can't create file. Ensure, that you have rights to write files in path.");
 					}
 				}
 			}
