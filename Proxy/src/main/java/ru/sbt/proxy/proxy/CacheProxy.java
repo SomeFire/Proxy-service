@@ -20,7 +20,7 @@ import static ru.sbt.proxy.proxy.Type.FILE;
  * Created by Рябов Дмитрий on 18.08.2016.
  */
 public class CacheProxy implements InvocationHandler {
-
+//TODO CacheProxy не должен быть InvocationHandler
     private final Map<Object, Object> resultByArg = new HashMap<>();
     private final Object delegate;
 
