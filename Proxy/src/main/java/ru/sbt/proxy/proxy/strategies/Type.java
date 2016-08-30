@@ -1,4 +1,4 @@
-package ru.sbt.proxy.proxy;
+package ru.sbt.proxy.proxy.strategies;
 
 /**
  * Created by Рябов Дмитрий on 18.08.2016.

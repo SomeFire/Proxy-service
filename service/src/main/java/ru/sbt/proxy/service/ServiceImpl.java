@@ -1,17 +1,11 @@
 package ru.sbt.proxy.service;
 
-import ru.sbt.proxy.proxy.Cache;
 import ru.sbt.proxy.proxy.CacheProxy;
+import ru.sbt.proxy.proxy.strategies.FileSystemProxyStrategy;
+import ru.sbt.proxy.proxy.strategies.InMemoryProxyStrategy;
 
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.ObjectOutputStream;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-
-import static ru.sbt.proxy.proxy.Type.FILE;
 
 /**
  * Created by Рябов Дмитрий on 19.08.2016.
@@ -28,7 +22,7 @@ public class ServiceImpl implements Service{
 	}
 
 	public static void main(String[] args) {
-		Service s = CacheProxy.cache(new ServiceImpl(), "");
+		Service s = CacheProxy.cache(new ServiceImpl(), "", new InMemoryProxyStrategy(), new FileSystemProxyStrategy());
 		s.run(null, 0d, null);
 		s.work(null);
 	}

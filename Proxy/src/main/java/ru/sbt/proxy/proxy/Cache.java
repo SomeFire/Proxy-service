@@ -1,5 +1,7 @@
 package ru.sbt.proxy.proxy;
 
+import ru.sbt.proxy.proxy.strategies.Type;
+
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 

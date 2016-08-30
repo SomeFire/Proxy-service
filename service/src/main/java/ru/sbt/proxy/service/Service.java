@@ -5,7 +5,7 @@ import ru.sbt.proxy.proxy.Cache;
 import java.util.Date;
 import java.util.List;
 
-import static ru.sbt.proxy.proxy.Type.*;
+import static ru.sbt.proxy.proxy.strategies.Type.*;
 
 /**
  * Created by Рябов Дмитрий on 18.08.2016.
